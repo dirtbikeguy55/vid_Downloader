@@ -6,6 +6,7 @@ import multiprocessing
 # Add check boxes that allow the user to select audio or video
 # Add a field for the user to select to download destination
 # 
+# Add an advanced section that lets the user add args to the youtube-dl command
 
 URL = "https://www.youtube.com/watch?v=sJ0MaudqcsY"
 #url = input(str("Enter the URL: "))
