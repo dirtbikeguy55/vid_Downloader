@@ -2,6 +2,11 @@ import os
 import tkinter as tk
 import multiprocessing
 
+#TODO: Make the URL be user input and add a text field for the input
+# Add check boxes that allow the user to select audio or video
+# Add a field for the user to select to download destination
+# 
+
 URL = "https://www.youtube.com/watch?v=sJ0MaudqcsY"
 #url = input(str("Enter the URL: "))
 
