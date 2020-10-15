@@ -12,9 +12,6 @@ import ffmpeg
 
 #BUGS:
 #The videos are still being downloaded to the current directory that the file is in
-#When the video option is selected, the video only downloads as audio
-
-#https://www.pornhub.com/view_video.php?viewkey=ph59d79e7022c69
 
 ydl_opts = {}
 
