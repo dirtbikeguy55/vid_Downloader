@@ -1,7 +1,9 @@
 import os
 import tkinter as tk
+from tkinter import filedialog
 import multiprocessing
 import youtube_dl
+import ffmpeg
 
 #TODO: 
 # Make the URL be user input and add a text field for the input
@@ -13,15 +15,19 @@ import youtube_dl
 #
 # Add an advanced section that lets the user add args to the youtube-dl command
 
-URL = "https://www.youtube.com/watch?v=x9ihvOje2yg"
+URL = ''
 ydl_opts = {}
 
-var1 = int
-var2 = int
+opts = [('Audio', '0'),
+        ('Video', '1')]
+
+wd = os.getcwd()
+
 
 
 #downloads the video that the user inputs
 def download_vid():
+    getTxt()
     ydl_opts = {
     'format': 'bestaudio/best',
     'postprocessors': [{
@@ -30,7 +36,6 @@ def download_vid():
         'preferredquality': '192',
         }]
     }
-
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
 
@@ -63,32 +68,64 @@ def check_status(f):
     if f.is_alive():
         label.config(text = "Downloading")
         d_button.config(state = "disabled")
-        audiocb.config(state = "disabled")
-        videocb.config(state = "disabled")
+        rb.config(state = "disabled")
+        des_button.config(state = "disabled")
         root.after(200, lambda f=f: check_status(f))
     else:
     #changes the label to show when the function is not running
         label.config(text = "Not Downloading")
         d_button.config(state = "normal")
+        rb.config(state = "normal")
+        des_button.config(state = "normal")
     return
+
+def browse_button():
+    # Allow user to select a directory and store it in global var
+    # called folder_path
+    global folder_path
+    filename = filedialog.askdirectory()
+    folder_path = filename
+    os.chdir(filename)
+    wd = os.getcwd()
+    print(filename)
+    print(wd)
+
+#Left off here trying to fix the url get fnc so that it grabs the user input and saves it to the URL variable
+def getTxt():
+    URL = urlin.get()
+    print(URL)
+    return URL
 
 if __name__ == "__main__":
     root = tk.Tk()
+
+    root.title("Video Downloader")
+    var1 = tk.StringVar()
+    url = tk.StringVar()
+    var1.set('0')
     #resizes the window
     root.geometry("400x200")
     #specifies the canvas for the application
     label2 = tk.Label(root, text = "Enter URL")
     label2.pack(side = 'top')
     #user input
-    urlin = tk.Entry(root,width = 45)
+    urlin = tk.Entry(root,textvariable = url,width = 45)
     urlin.pack(side = 'top')
-    audiocb = tk.Checkbutton(root,text = 'Audio', variable=var1)
-    audiocb.pack(side = 'top')
-    videocb = tk.Checkbutton(root,text = 'Video', variable=var2)
-    videocb.pack(side = 'top')
+
+    for text,opt in opts:
+        rb = tk.Radiobutton(root,text=text, variable = var1, value = opt)
+        rb.pack()
+
+    des_button = tk.Button(root, text = "Destination", command = browse_button)
+    des_button.pack(side = 'top')
     #creates a button that runs the function
     d_button = tk.Button(root, text = "Download Video", command = queue)
     d_button.pack(side = 'top')
+
+    folder_path = ''
+    lbl1 = tk.Label(master=root,textvariable=folder_path)
+    lbl1.pack()
+
     #creates a label for updating the user
     label = tk.Label(root, text = "Not Downloading")
     label.pack(side = 'top')
