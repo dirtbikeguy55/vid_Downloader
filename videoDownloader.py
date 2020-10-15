@@ -6,19 +6,15 @@ import youtube_dl
 import ffmpeg
 
 #TODO: 
-# Make the URL be user input and add a text field for the input
-# Add check boxes that allow the user to select audio or video
-# Add a field for the user to select to download destination
-# Show the command line output in a text box
-# Make it so that the user input is actually taken into the URL string
 # Add the option to download playlists while also selecting certain ranges in the playlist
-#
+# Add check boxes for youtube and then other sites so that i can have things specific to youtube
 # Make it so that the videos are downloaded as videos and the audio as audio
-# Add an advanced section that lets the user add args to the youtube-dl command
 
 #BUGS:
 #The videos are still being downloaded to the current directory that the file is in
+#When the video option is selected, the video only downloads as audio
 
+#https://www.pornhub.com/view_video.php?viewkey=ph59d79e7022c69
 
 ydl_opts = {}
 
@@ -28,43 +24,40 @@ opts = [('Audio', '0'),
 wd = os.getcwd()
 
 def getTxt():
-    global URL 
+    global URL
+    global val
+    val = var1.get()
     URL = urlin.get()
-    print(urlin.get())
-    print(URL)
-    return URL
+    return URL,val
 
 #downloads the video that the user inputs
-def download_vid(URL):
-    ydl_opts = {
-    'format': 'bestaudio/best',
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'wav',
-        'preferredquality': '192',
-        }]
-    }
+def download_vid(URL,val):
+    print(val)
+    if val == 1:
+        #Download video and audio
+        ydl_opts = {
+        'format': 'bestvideo[ext=mkv]+bestaudio[ext=webm]/bestvideo+bestaudio',
+        'postprocessors': [{
+            'key': 'FFmpegVideoConvertor',
+            }]
+        }
+    #Downloads only the audio from the video
+    if val == 0:
+        ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+            }]
+        }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
 
-#downloads the audio from the video that the user inputs
-def download_audio():
-
-    ydl_opts = {
-    'format': 'bestaudio/best',
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'mp3',
-        'preferredquality': '192',
-        }]
-    }
-
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([URL])
 
 #adds multiprocessing to the command so tkinter dosent freeze while its running
 def queue():
-    f = multiprocessing.Process(target=download_vid,args=(URL,))
+    f = multiprocessing.Process(target=download_vid,args=(URL,val,))
     #starts the function that the user selects
     f.start()
     #checks to see if the function is running
@@ -103,40 +96,33 @@ if __name__ == "__main__":
     root = tk.Tk()
 
     root.title("Video Downloader")
-    var1 = tk.StringVar()
+    var1 = tk.IntVar()
     url = tk.StringVar(root)
     var1.set('0')
     #resizes the window
     root.geometry("400x200")
+    root.configure(background = "gray")
     #specifies the canvas for the application
-    label2 = tk.Label(root, text = "Enter URL")
+    label2 = tk.Label(root, text = "Enter URL", background = "gray")
     label2.pack(side = 'top')
     #user input
-    urlin = tk.Entry(root,width = 45)
+    urlin = tk.Entry(root,width = 45, background = "dark gray")
     urlin.pack(side = 'top')
 
-
-
-    enter_url = tk.Button(root, text = "Enter",command = getTxt)
+    enter_url = tk.Button(root, text = "Enter",command = getTxt, background = "dark gray")
     enter_url.pack()
 
-
-
     for text,opt in opts:
-        rb = tk.Radiobutton(root,text = text, variable = var1, value = opt)
+        rb = tk.Radiobutton(root,text = text, variable = var1, value = opt, background = "gray", activebackground = "gray")
         rb.pack()
 
-    des_button = tk.Button(root, text = "Destination", command = browse_button)
+    des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
     des_button.pack(side = 'top')
     #creates a button that runs the function
-    d_button = tk.Button(root, text = "Download Video", command = queue)
+    d_button = tk.Button(root, text = "Download Video", command = queue, background = "dark gray")
     d_button.pack(side = 'top')
 
-    folder_path = ''
-    lbl1 = tk.Label(master=root,textvariable=folder_path)
-    lbl1.pack()
-
     #creates a label for updating the user
-    label = tk.Label(root, text = "Not Downloading")
+    label = tk.Label(root, text = "Not Downloading", background = "gray")
     label.pack(side = 'top')
     root.mainloop()
