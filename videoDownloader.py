@@ -13,11 +13,11 @@ import ffmpeg
 # Make it so that the user input is actually taken into the URL string
 # Add the option to download playlists while also selecting certain ranges in the playlist
 #
+# Make it so that the videos are downloaded as videos and the audio as audio
 # Add an advanced section that lets the user add args to the youtube-dl command
 
 #BUGS:
 #The videos are still being downloaded to the current directory that the file is in
-#ffmpeg needs to be installed
 
 
 ydl_opts = {}
