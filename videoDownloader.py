@@ -7,11 +7,12 @@ import youtube_dl
 # Add check boxes that allow the user to select audio or video
 # Add a field for the user to select to download destination
 # Show the command line output in a text box
-# 
+# Make it so that the user input is actually taken into the URL string
+# Make a button to choose the download destination
+#
 # Add an advanced section that lets the user add args to the youtube-dl command
 
-URL = "https://www.youtube.com/watch?v=sJ0MaudqcsY"
-#url = input(str("Enter the URL: "))
+URL = ""
 
 ydl_opts = {}
 
@@ -20,7 +21,6 @@ var2 = int
 
 #downloads the video that the user inputs
 def download_vid():
-
     ydl_opts = {
     'format': 'bestaudio/best',
     'postprocessors': [{
@@ -32,8 +32,6 @@ def download_vid():
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
-    #not used
-    #os.system('cmd /c youtube-dl '+ URL)
 
 #downloads the audio from the video that the user inputs
 def download_audio():
@@ -49,8 +47,6 @@ def download_audio():
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
-    #Not used anymore
-    #os.system('cmd /c youtube-dl --extract-audio --audio-format mp3 ' + URL)
 
 #adds multiprocessing to the command so tkinter dosent freeze while its running
 def queue():
@@ -77,11 +73,12 @@ def check_status(f):
 
 if __name__ == "__main__":
     root = tk.Tk()
+    #resizes the window
     root.geometry("400x200")
-    #root.resizable(height = 200, width = 500)
     #specifies the canvas for the application
     label2 = tk.Label(root, text = "Enter URL")
     label2.pack(side = 'top')
+    #user input
     urlin = tk.Entry(root,width = 45)
     urlin.pack(side = 'top')
     audiocb = tk.Checkbutton(root,text = 'Audio', variable=var1)
