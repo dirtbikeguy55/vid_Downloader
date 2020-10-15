@@ -3,21 +3,22 @@ import tkinter as tk
 import multiprocessing
 import youtube_dl
 
-#TODO: Make the URL be user input and add a text field for the input
+#TODO: 
+# Make the URL be user input and add a text field for the input
 # Add check boxes that allow the user to select audio or video
 # Add a field for the user to select to download destination
 # Show the command line output in a text box
 # Make it so that the user input is actually taken into the URL string
-# Make a button to choose the download destination
+# Add the option to download playlists while also selecting certain ranges in the playlist
 #
 # Add an advanced section that lets the user add args to the youtube-dl command
 
-URL = ""
-
+URL = "https://www.youtube.com/watch?v=x9ihvOje2yg"
 ydl_opts = {}
 
 var1 = int
 var2 = int
+
 
 #downloads the video that the user inputs
 def download_vid():
