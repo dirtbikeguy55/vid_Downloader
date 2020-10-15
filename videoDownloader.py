@@ -15,7 +15,11 @@ import ffmpeg
 #
 # Add an advanced section that lets the user add args to the youtube-dl command
 
-URL = ''
+#BUGS:
+#The videos are still being downloaded to the current directory that the file is in
+#ffmpeg needs to be installed
+
+
 ydl_opts = {}
 
 opts = [('Audio', '0'),
@@ -23,16 +27,20 @@ opts = [('Audio', '0'),
 
 wd = os.getcwd()
 
-
+def getTxt():
+    global URL 
+    URL = urlin.get()
+    print(urlin.get())
+    print(URL)
+    return URL
 
 #downloads the video that the user inputs
-def download_vid():
-    getTxt()
+def download_vid(URL):
     ydl_opts = {
     'format': 'bestaudio/best',
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'mp4',
+        'preferredcodec': 'wav',
         'preferredquality': '192',
         }]
     }
@@ -56,7 +64,7 @@ def download_audio():
 
 #adds multiprocessing to the command so tkinter dosent freeze while its running
 def queue():
-    f = multiprocessing.Process(target=download_vid)
+    f = multiprocessing.Process(target=download_vid,args=(URL,))
     #starts the function that the user selects
     f.start()
     #checks to see if the function is running
@@ -90,18 +98,13 @@ def browse_button():
     print(filename)
     print(wd)
 
-#Left off here trying to fix the url get fnc so that it grabs the user input and saves it to the URL variable
-def getTxt():
-    URL = urlin.get()
-    print(URL)
-    return URL
 
 if __name__ == "__main__":
     root = tk.Tk()
 
     root.title("Video Downloader")
     var1 = tk.StringVar()
-    url = tk.StringVar()
+    url = tk.StringVar(root)
     var1.set('0')
     #resizes the window
     root.geometry("400x200")
@@ -109,11 +112,18 @@ if __name__ == "__main__":
     label2 = tk.Label(root, text = "Enter URL")
     label2.pack(side = 'top')
     #user input
-    urlin = tk.Entry(root,textvariable = url,width = 45)
+    urlin = tk.Entry(root,width = 45)
     urlin.pack(side = 'top')
 
+
+
+    enter_url = tk.Button(root, text = "Enter",command = getTxt)
+    enter_url.pack()
+
+
+
     for text,opt in opts:
-        rb = tk.Radiobutton(root,text=text, variable = var1, value = opt)
+        rb = tk.Radiobutton(root,text = text, variable = var1, value = opt)
         rb.pack()
 
     des_button = tk.Button(root, text = "Destination", command = browse_button)
