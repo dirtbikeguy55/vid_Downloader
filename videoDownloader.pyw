@@ -6,13 +6,14 @@ import youtube_dl
 import ffmpeg
 
 #TODO: 
+# Reorgnize everything and make it look nice
 # Add the option to download playlists while also selecting certain ranges in the playlist
 # Add check boxes for youtube and then other sites so that i can have things specific to youtube
 # Add a progress bar for the download progress
 # Change the enter button below the url input to be combined with the download button
+# Add a var for the radiobtns to increament the row and column of the element
 
 #BUGS:
-#The videos are still being downloaded to the current directory that the file is in
 
 ydl_opts = {}
 
@@ -102,25 +103,26 @@ if __name__ == "__main__":
     root.configure(background = "gray")
     #specifies the canvas for the application
     label2 = tk.Label(root, text = "Enter URL", background = "gray")
-    label2.pack(side = 'top')
+    label2.grid(row=0,column=2)
     #user input
     urlin = tk.Entry(root,width = 45, background = "dark gray")
-    urlin.pack(side = 'top')
+    urlin.grid(row=1,column=2)
 
     enter_url = tk.Button(root, text = "Enter",command = getTxt, background = "dark gray")
-    enter_url.pack()
+    enter_url.grid(row=2,column=1)
 
     for text,opt in opts:
         rb = tk.Radiobutton(root,text = text, variable = var1, value = opt, background = "gray", activebackground = "gray")
-        rb.pack()
+        #Need to put a var in to inc these numbers while in the for loop
+        rb.grid(row=3,column=1)
 
     des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
-    des_button.pack(side = 'top')
+    des_button.grid(row=5,column=1)
     #creates a button that runs the function
     d_button = tk.Button(root, text = "Download Video", command = queue, background = "dark gray")
-    d_button.pack(side = 'top')
+    d_button.grid(row=5,column=2)
 
     #creates a label for updating the user
     label = tk.Label(root, text = "Not Downloading", background = "gray")
-    label.pack(side = 'top')
+    label.grid(row=6,column=2)
     root.mainloop()
