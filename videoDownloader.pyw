@@ -14,6 +14,8 @@ import ffmpeg
 # Add a var for the radiobtns to increament the row and column of the element
 
 #BUGS:
+# The audio and video radiobtns arent seperate
+# When the window closes, end the youtube-dl download
 
 ydl_opts = {}
 
@@ -31,7 +33,6 @@ def getTxt():
 
 #downloads the video that the user inputs
 def download_vid(URL,val):
-    print(val)
     if val == 1:
         #Download video and audio
         ydl_opts = {
@@ -56,6 +57,7 @@ def download_vid(URL,val):
 
 #adds multiprocessing to the command so tkinter dosent freeze while its running
 def queue():
+    getTxt()
     f = multiprocessing.Process(target=download_vid,args=(URL,val,))
     #starts the function that the user selects
     f.start()
@@ -87,8 +89,6 @@ def browse_button():
     folder_path = filename
     os.chdir(folder_path)
     wd = os.getcwd()
-    print(folder_path)
-    print(wd)
 
 
 if __name__ == "__main__":
@@ -108,21 +108,23 @@ if __name__ == "__main__":
     urlin = tk.Entry(root,width = 45, background = "dark gray")
     urlin.grid(row=1,column=2)
 
-    enter_url = tk.Button(root, text = "Enter",command = getTxt, background = "dark gray")
-    enter_url.grid(row=2,column=1)
-
+    # enter_url = tk.Button(root, text = "Enter",command = getTxt, background = "dark gray")
+    # enter_url.grid(row=2,column=1)
+    r = 3
+    c = 1
     for text,opt in opts:
         rb = tk.Radiobutton(root,text = text, variable = var1, value = opt, background = "gray", activebackground = "gray")
         #Need to put a var in to inc these numbers while in the for loop
-        rb.grid(row=3,column=1)
+        rb.grid(row=r,column=c)
+        c+=1
 
     des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
-    des_button.grid(row=5,column=1)
+    des_button.grid(row=5,column=2)
     #creates a button that runs the function
     d_button = tk.Button(root, text = "Download Video", command = queue, background = "dark gray")
-    d_button.grid(row=5,column=2)
+    d_button.grid(row=6,column=2)
 
     #creates a label for updating the user
     label = tk.Label(root, text = "Not Downloading", background = "gray")
-    label.grid(row=6,column=2)
+    label.grid(row=7,column=2)
     root.mainloop()
