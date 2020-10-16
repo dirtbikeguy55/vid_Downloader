@@ -8,7 +8,8 @@ import ffmpeg
 #TODO: 
 # Add the option to download playlists while also selecting certain ranges in the playlist
 # Add check boxes for youtube and then other sites so that i can have things specific to youtube
-# Make it so that the videos are downloaded as videos and the audio as audio
+# Add a progress bar for the download progress
+# Change the enter button below the url input to be combined with the download button
 
 #BUGS:
 #The videos are still being downloaded to the current directory that the file is in
@@ -83,9 +84,9 @@ def browse_button():
     global folder_path
     filename = filedialog.askdirectory()
     folder_path = filename
-    os.chdir(filename)
+    os.chdir(folder_path)
     wd = os.getcwd()
-    print(filename)
+    print(folder_path)
     print(wd)
 
 
