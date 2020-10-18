@@ -3,19 +3,20 @@ import tkinter as tk
 from tkinter import filedialog
 import multiprocessing
 import youtube_dl
-import ffmpeg
+import time
 
 #TODO: 
-# Reorgnize everything and make it look nice
 # Add the option to download playlists while also selecting certain ranges in the playlist
 # Add check boxes for youtube and then other sites so that i can have things specific to youtube
-# Add a progress bar for the download progress
-# Change the enter button below the url input to be combined with the download button
-# Add a var for the radiobtns to increament the row and column of the element
+# Switch from grid to pack
 
 #BUGS:
-# The audio and video radiobtns arent seperate
 # When the window closes, end the youtube-dl download
+
+#Changes:
+# Changed app icon
+# Added playlist checkbox
+# Fixed some bugs
 
 ydl_opts = {}
 
@@ -90,33 +91,39 @@ def browse_button():
     os.chdir(folder_path)
     wd = os.getcwd()
 
-
 if __name__ == "__main__":
     root = tk.Tk()
 
     root.title("Video Downloader")
     var1 = tk.IntVar()
+    pl = tk.IntVar()
+    plint = tk.IntVar()
     url = tk.StringVar(root)
+    pic = tk.PhotoImage(file = 'icon.png')
+    root.iconphoto(False,pic)
     var1.set('0')
     #resizes the window
     root.geometry("400x200")
     root.configure(background = "gray")
     #specifies the canvas for the application
-    label2 = tk.Label(root, text = "Enter URL", background = "gray")
+    label2 = tk.Label(root, text = "Enter URL", background = "gray",)
     label2.grid(row=0,column=2)
     #user input
-    urlin = tk.Entry(root,width = 45, background = "dark gray")
+    urlin = tk.Entry(root,width = 45, background = "dark gray",justify='center')
     urlin.grid(row=1,column=2)
 
-    # enter_url = tk.Button(root, text = "Enter",command = getTxt, background = "dark gray")
-    # enter_url.grid(row=2,column=1)
     r = 3
-    c = 1
+    c = 2
     for text,opt in opts:
         rb = tk.Radiobutton(root,text = text, variable = var1, value = opt, background = "gray", activebackground = "gray")
-        #Need to put a var in to inc these numbers while in the for loop
         rb.grid(row=r,column=c)
-        c+=1
+        r+=1
+
+    play = tk.Checkbutton(root,text = "Playlist", variable = pl,background="gray",activebackground="gray")
+    play.grid(row=3,column=3)
+
+    playint = tk.Entry(root,background="dark gray")
+    playint.grid(row=4,column=3)
 
     des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
     des_button.grid(row=5,column=2)
@@ -127,4 +134,5 @@ if __name__ == "__main__":
     #creates a label for updating the user
     label = tk.Label(root, text = "Not Downloading", background = "gray")
     label.grid(row=7,column=2)
+
     root.mainloop()
