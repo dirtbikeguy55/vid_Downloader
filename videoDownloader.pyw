@@ -125,6 +125,10 @@ if __name__ == "__main__":
     playint = tk.Entry(root,background="dark gray")
     playint.grid(row=4,column=3)
 
+    #Not working properly yet
+    yout = tk.Checkbutton(root,text = "Youtube Video",background="gray",activebackground="gray")
+    yout.grid(row=3,column=4)
+
     des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
     des_button.grid(row=5,column=2)
     #creates a button that runs the function
