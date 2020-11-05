@@ -1,22 +1,21 @@
 import os
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
+from tkinter import Label
 import multiprocessing
 import youtube_dl
 import time
 
 #TODO: 
-# Add the option to download playlists while also selecting certain ranges in the playlist
-# Add check boxes for youtube and then other sites so that i can have things specific to youtube
-# Switch from grid to pack
+# Disable the url input while a video is being downloaded
+# Add the option to pause/resume and stop downloads
 
 #BUGS:
-# When the window closes, end the youtube-dl download
 
 #Changes:
-# Changed app icon
-# Added playlist checkbox
-# Fixed some bugs
+# Got playlist checkbox working
+# Added function that closes the program and stops the download
 
 ydl_opts = {}
 
@@ -25,9 +24,11 @@ opts = [('Audio', '0'),
 
 wd = os.getcwd()
 
+
 def getTxt():
     global URL
     global val
+
     val = var1.get()
     URL = urlin.get()
     return URL,val
@@ -35,9 +36,13 @@ def getTxt():
 #downloads the video that the user inputs
 def download_vid(URL,val):
     if val == 1:
-        #Download video and audio
+        #Download video with audio
         ydl_opts = {
         'format': 'bestvideo[ext=mkv]+bestaudio[ext=webm]/bestvideo+bestaudio',
+        'outtmpl':  '%(title)s.%(ext)s',
+        'forcethumbnail': True,
+        'noplaylist' : True,
+        'progress_hooks': [my_hook],
         'postprocessors': [{
             'key': 'FFmpegVideoConvertor',
             }]
@@ -46,20 +51,61 @@ def download_vid(URL,val):
     if val == 0:
         ydl_opts = {
         'format': 'bestaudio/best',
+        'outtmpl':  '%(title)s.%(ext)s',
+        'forcethumbnail': True,
+        'noplaylist' : True,
+        'progress_hooks': [my_hook],
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
-            'preferredquality': '192',
+            'preferredquality': '320',
             }]
         }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
 
+def download_playlist(URL,val):
+    if val == 1:
+        #Download video with audio
+        ydl_opts = {
+        'format': 'bestvideo[ext=mkv]+bestaudio[ext=webm]/bestvideo+bestaudio',
+        'outtmpl':  '%(title)s.%(ext)s',
+        'forcethumbnail': True,
+        'noplaylist' : False,
+        'progress_hooks': [my_hook],
+        'postprocessors': [{
+            'key': 'FFmpegVideoConvertor',
+            }]
+        }
+    
+    #Downloads only the audio from the video
+    if val == 0:
+        ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl':  '%(title)s.%(ext)s',
+        'forcethumbnail': True,
+        'noplaylist' : False,
+        'progress_hooks': [my_hook],
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '320',
+            }]
+        }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([URL])
+    
 
 #adds multiprocessing to the command so tkinter dosent freeze while its running
 def queue():
+    global playli
+    playli = pl.get()
     getTxt()
-    f = multiprocessing.Process(target=download_vid,args=(URL,val,))
+    if playli == 0:
+        f = multiprocessing.Process(target=download_vid,args=(URL,val,))
+    if playli == 1:
+        f = multiprocessing.Process(target=download_playlist,args=(URL,val,))
     #starts the function that the user selects
     f.start()
     #checks to see if the function is running
@@ -90,10 +136,22 @@ def browse_button():
     folder_path = filename
     os.chdir(folder_path)
     wd = os.getcwd()
+    downloc.config(text = wd)
+
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        root.destroy()
+#Supposed to change the value of the download label when the video is converting
+def my_hook(d):
+    if d['status'] == 'finished':
+        print('Done downloading, now converting ...')
+        #label.config(text = "Converting Video...")
+    return
 
 if __name__ == "__main__":
     root = tk.Tk()
 
+    root.protocol("WM_DELETE_WINDOW", on_closing)
     root.title("Video Downloader")
     var1 = tk.IntVar()
     pl = tk.IntVar()
@@ -102,8 +160,9 @@ if __name__ == "__main__":
     pic = tk.PhotoImage(file = 'icon.png')
     root.iconphoto(False,pic)
     var1.set('0')
+
     #resizes the window
-    root.geometry("400x200")
+    root.geometry("400x225")
     root.configure(background = "gray")
     #specifies the canvas for the application
     label2 = tk.Label(root, text = "Enter URL", background = "gray",)
@@ -119,24 +178,21 @@ if __name__ == "__main__":
         rb.grid(row=r,column=c)
         r+=1
 
-    play = tk.Checkbutton(root,text = "Playlist", variable = pl,background="gray",activebackground="gray")
-    play.grid(row=3,column=3)
-
-    playint = tk.Entry(root,background="dark gray")
-    playint.grid(row=4,column=3)
-
-    #Not working properly yet
-    yout = tk.Checkbutton(root,text = "Youtube Video",background="gray",activebackground="gray")
-    yout.grid(row=3,column=4)
+    play = tk.Checkbutton(root,text = "Playlist",variable = pl,background="gray",activebackground="gray")
+    play.grid(row=2,column=2)
 
     des_button = tk.Button(root, text = "Destination", command = browse_button, background = "dark gray")
     des_button.grid(row=5,column=2)
+
+    #Label that shows the download location
+    downloc = tk.Label(root, text = "Download Location...", background = "dark gray")
+    downloc.grid(row=6,column=2)
     #creates a button that runs the function
     d_button = tk.Button(root, text = "Download Video", command = queue, background = "dark gray")
-    d_button.grid(row=6,column=2)
+    d_button.grid(row=7,column=2)
 
     #creates a label for updating the user
     label = tk.Label(root, text = "Not Downloading", background = "gray")
-    label.grid(row=7,column=2)
+    label.grid(row=8,column=2)
 
     root.mainloop()
