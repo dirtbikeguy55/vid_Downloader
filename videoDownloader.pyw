@@ -8,12 +8,14 @@ import youtube_dl
 import time
 
 #TODO: 
-# Disable the url input while a video is being downloaded
 # Add the option to pause/resume and stop downloads
+# Save the files already downloaded to a file so that they dont get downloaded twice
+# Change the downloading text when the video is converting after downloading
 
 #BUGS:
 
 #Changes:
+# Disable the url input while a video is being downloaded
 # Got playlist checkbox working
 # Added function that closes the program and stops the download
 
@@ -116,6 +118,7 @@ def check_status(f):
     #changes the label to show that the function is running
     if f.is_alive():
         label.config(text = "Downloading")
+        urlin.config(state = "disabled")
         d_button.config(state = "disabled")
         rb.config(state = "disabled")
         des_button.config(state = "disabled")
@@ -123,9 +126,11 @@ def check_status(f):
     else:
     #changes the label to show when the function is not running
         label.config(text = "Not Downloading")
+        urlin.config(state = "normal")
         d_button.config(state = "normal")
         rb.config(state = "normal")
         des_button.config(state = "normal")
+        
     return
 
 def browse_button():
