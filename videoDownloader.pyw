@@ -12,7 +12,6 @@ import updater
 # Add the option to pause/resume and stop downloads
 # Save the files already downloaded to a file so that they dont get downloaded twice
 # Change the downloading text when the video is converting after downloading
-# Add another python file that automatically runs and updates this script from github if there is an update
 
 #BUGS:
 
@@ -21,8 +20,8 @@ import updater
 # Got playlist checkbox working
 # Added function that closes the program and stops the download
 
-updater.update()
-print('Updated main file!')
+#updater.update()
+#print('Updated main file!')
 
 ydl_opts = {}
 
@@ -39,6 +38,11 @@ def getTxt():
     val = var1.get()
     URL = urlin.get()
     return URL,val
+
+def saveLinks():
+    text_file = ("Links.txt", "w")
+    text_file.write(urlin.get())
+    text_file.close()
 
 #downloads the video that the user inputs
 def download_vid(URL,val):
@@ -109,6 +113,7 @@ def queue():
     global playli
     playli = pl.get()
     getTxt()
+    saveLinks()
     if playli == 0:
         f = multiprocessing.Process(target=download_vid,args=(URL,val,))
     if playli == 1:
