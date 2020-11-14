@@ -8,16 +8,9 @@ import youtube_dl
 import time
 
 #TODO: 
-# Add the option to pause/resume and stop downloads
 # Save the files already downloaded to a file so that they dont get downloaded twice
-# Change the downloading text when the video is converting after downloading
 
 #BUGS:
-
-#Changes:
-# Disable the url input while a video is being downloaded
-# Got playlist checkbox working
-# Added function that closes the program and stops the download
 
 ydl_opts = {}
 
@@ -25,7 +18,7 @@ opts = [('Audio', '0'),
         ('Video', '1')]
 
 wd = os.getcwd()
-
+svlwd = os.getcwd()
 
 def getTxt():
     global URL
@@ -34,6 +27,18 @@ def getTxt():
     val = var1.get()
     URL = urlin.get()
     return URL,val
+
+def svLink():
+    wd = os.getcwd()
+    os.chdir(svlwd)
+    svl = urlin.get()
+    
+    #eventually add option that compares user input text with links in file
+    with open('links.txt', 'a') as f:
+        f.write(svl+"\n")
+        f.close()
+    
+    os.chdir(wd)
 
 #downloads the video that the user inputs
 def download_vid(URL,val):
@@ -104,6 +109,7 @@ def queue():
     global playli
     playli = pl.get()
     getTxt()
+    svLink()
     if playli == 0:
         f = multiprocessing.Process(target=download_vid,args=(URL,val,))
     if playli == 1:
