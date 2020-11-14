@@ -6,11 +6,13 @@ from tkinter import Label
 import multiprocessing
 import youtube_dl
 import time
+import updater
 
 #TODO: 
 # Add the option to pause/resume and stop downloads
 # Save the files already downloaded to a file so that they dont get downloaded twice
 # Change the downloading text when the video is converting after downloading
+# Add another python file that automatically runs and updates this script from github if there is an update
 
 #BUGS:
 
@@ -18,6 +20,9 @@ import time
 # Disable the url input while a video is being downloaded
 # Got playlist checkbox working
 # Added function that closes the program and stops the download
+
+updater.update()
+print('Updated main file!')
 
 ydl_opts = {}
 
