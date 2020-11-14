@@ -40,8 +40,9 @@ def getTxt():
     return URL,val
 
 def saveLinks():
+    svl = urlin.get()
     text_file = ("Links.txt", "w")
-    text_file.write(urlin.get())
+    text_file.write(svl)
     text_file.close()
 
 #downloads the video that the user inputs
