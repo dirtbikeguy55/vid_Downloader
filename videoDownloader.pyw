@@ -6,7 +6,6 @@ from tkinter import Label
 import multiprocessing
 import youtube_dl
 import time
-import updater
 
 #TODO: 
 # Add the option to pause/resume and stop downloads
@@ -19,9 +18,6 @@ import updater
 # Disable the url input while a video is being downloaded
 # Got playlist checkbox working
 # Added function that closes the program and stops the download
-
-#updater.update()
-#print('Updated main file!')
 
 ydl_opts = {}
 
@@ -38,12 +34,6 @@ def getTxt():
     val = var1.get()
     URL = urlin.get()
     return URL,val
-
-def saveLinks():
-    svl = urlin.get()
-    text_file = ("Links.txt", "w")
-    text_file.write(svl)
-    text_file.close()
 
 #downloads the video that the user inputs
 def download_vid(URL,val):
@@ -114,7 +104,6 @@ def queue():
     global playli
     playli = pl.get()
     getTxt()
-    saveLinks()
     if playli == 0:
         f = multiprocessing.Process(target=download_vid,args=(URL,val,))
     if playli == 1:
