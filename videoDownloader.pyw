@@ -9,6 +9,9 @@ import time
 
 #TODO: 
 # Save the files already downloaded to a file so that they dont get downloaded twice
+# This works while using --download-archive, but I cant get it to work without using the command line.
+#
+# Fix the downloading/not downloading label so that it still says that it is downloading while the temp files are being converted/deleted
 
 #BUGS:
 
@@ -28,6 +31,7 @@ def getTxt():
     URL = urlin.get()
     return URL,val
 
+#Not currently used
 def svLink():
     wd = os.getcwd()
     os.chdir(svlwd)
@@ -42,6 +46,23 @@ def svLink():
 
 #downloads the video that the user inputs
 def download_vid(URL,val):
+        
+    if val == 0:
+        #Downloads only the audio from the video
+        ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl':  '%(title)s.%(ext)s',
+        'forcethumbnail': True,
+        'noplaylist' : True,
+        '--download-archive' : 'Archive.txt',
+        'progress_hooks': [my_hook],
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '320',
+            }]
+        }
+
     if val == 1:
         #Download video with audio
         ydl_opts = {
@@ -54,20 +75,7 @@ def download_vid(URL,val):
             'key': 'FFmpegVideoConvertor',
             }]
         }
-    #Downloads only the audio from the video
-    if val == 0:
-        ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl':  '%(title)s.%(ext)s',
-        'forcethumbnail': True,
-        'noplaylist' : True,
-        'progress_hooks': [my_hook],
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '320',
-            }]
-        }
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([URL])
 
@@ -104,7 +112,7 @@ def download_playlist(URL,val):
         ydl.download([URL])
     
 
-#adds multiprocessing to the command so tkinter dosent freeze while its running
+#adds multiprocessing to the command so the program dosent freeze while its running
 def queue():
     global playli
     playli = pl.get()
@@ -152,7 +160,7 @@ def browse_button():
 def on_closing():
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
-#Supposed to change the value of the download label when the video is converting
+#Supposed to change the value of the download label when the video is converting, dosent currently work
 def my_hook(d):
     if d['status'] == 'finished':
         print('Done downloading, now converting ...')
